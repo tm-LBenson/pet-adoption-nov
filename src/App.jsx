@@ -7,6 +7,7 @@ import {
   deleteAnimal,
   scanAnimals,
   toggleAdopted,
+  updateAnimalImage,
 } from "./dynamo";
 import Animals from "./components/Animals";
 
@@ -36,7 +37,6 @@ function App() {
     });
   }
 
-
   async function handleToggle(animal) {
     await toggleAdopted(animal.id, !animal.adopted);
     setAnimals((prev) =>
@@ -47,6 +47,15 @@ function App() {
   async function handleDelete(id) {
     await deleteAnimal(id);
     setAnimals((prev) => prev.filter((animal) => animal.id !== id));
+  }
+
+  async function handleEditImage(animal) {
+    const url = window.prompt("Enter new image URL", animal.imageUrl);
+    if (!url) return;
+    await updateAnimalImage(animal.id, url);
+    setAnimals((prev) =>
+      prev.map((a) => (a.id === animal.id ? { ...a, imageUrl: url } : a)),
+    );
   }
 
   async function handleAdd() {
@@ -67,32 +76,46 @@ function App() {
     setShow(false);
   }
 
-  // TODO add filter for if available
+  const available = animals.filter((animal) => !animal.adopted);
+  const adopted = animals.filter((animal) => animal.adopted);
 
   return (
     <>
       <h1>Fur-Ever Friends Rescue</h1>
-      <Button
-        variant="primary"
-        onClick={() => setShow(true)}
-      >
-        Add Animal
-      </Button>
+      <main className='mt-20 flex flex-column text-center'>
+        <Button
+          className='m-auto'
+          variant="primary"
+          onClick={() => setShow(true)}
+        >
+          Add Animal
+        </Button>
 
-      <AnimalModal
-        show={show}
-        onHide={() => setShow(false)}
-        form={form}
-        onChange={handleChange}
-        onSave={handleAdd}
-      />
+        <AnimalModal
+          show={show}
+          onHide={() => setShow(false)}
+          form={form}
+          onChange={handleChange}
+          onSave={handleAdd}
+        />
 
-      <Animals
-        onAdoptToggle={handleToggle}
-        animals={animals}
-        title="Ready For Adoption!"
-        onDelete={handleDelete}
-      />
+        <Animals
+          onAdoptToggle={handleToggle}
+          animals={available}
+          title="Ready For Adoption!"
+          nopets="No pets avaiable"
+          onDelete={handleDelete}
+          onEditImage={handleEditImage}
+        />
+        <Animals
+          onAdoptToggle={handleToggle}
+          animals={adopted}
+          title="These animals have found a home!"
+          nopets="Please adopt a pet today!"
+          onDelete={handleDelete}
+          onEditImage={handleEditImage}
+        />
+      </main>
     </>
   );
 }
