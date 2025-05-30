@@ -32,7 +32,7 @@ export default function Animals({
                   />
                 </div>
                 <Button
-                  className="w-100"
+                  className="w-12"
                   size="sm"
                   variant="light"
                   onClick={() => onEditImage(animal)}
@@ -40,7 +40,7 @@ export default function Animals({
                   Edit
                 </Button>
               </div>
-              <div className="flex flex-column justify-content-between">
+              <div className="">
                 <div>
                   <strong>{animal.name}</strong> - {animal.species}, age{" "}
                   {animal.age}
