@@ -12,7 +12,7 @@ export default function Animals({
   nopets,
 }) {
   if (animals.length === 0) return <h2>{nopets}</h2>;
-
+  console.log(animals)
   return (
     <div>
       <h2>{title}</h2>
